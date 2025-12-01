@@ -6,6 +6,7 @@ export interface FrontmatterModifiedSettings {
   frontmatterProperty: string;
   createdDateProperty: string;
   momentFormat: string;
+  momentLocale: string;
   storeHistoryLog: boolean;
   historyNewestFirst: boolean;
   historyMaxItems: number;
@@ -22,6 +23,7 @@ export const DEFAULT_SETTINGS: FrontmatterModifiedSettings = {
   frontmatterProperty: 'modified',
   createdDateProperty: '',
   momentFormat: '',
+  momentLocale: 'en',
   storeHistoryLog: false,
   historyNewestFirst: false,
   historyMaxItems: 0,
@@ -81,6 +83,21 @@ export class FrontmatterModifiedSettingTab extends PluginSettingTab {
           this.plugin.settings.momentFormat = value
           await this.plugin.saveSettings()
         }))
+    new Setting(containerEl)
+      .setName('Date locale')
+      .setDesc('Specify a locale format for MomentJS to use. Available locales are here: ')
+      .addText(text => text
+        .setPlaceholder('en')
+        .setValue(this.plugin.settings.momentLocale)
+        .onChange(async value => {
+          this.plugin.settings.momentLocale = value || DEFAULT_SETTINGS.momentLocale
+          await this.plugin.saveSettings()
+          this.plugin.setLocale()
+        }))
+      .descEl.appendChild(createEl('a', {
+      text: 'MomentJS locales',
+      href: 'https://github.com/moment/moment/tree/develop/locale'
+    }))
 
     // Store history as list or single value
     new Setting(containerEl)

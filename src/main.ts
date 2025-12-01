@@ -145,4 +145,15 @@ export default class FrontmatterModified extends Plugin {
       return output
     }
   }
+
+  /**
+   * Set MomentJS locale if specified
+   */
+  setLocale () {
+    if (this.settings.momentLocale) {
+      try {
+        moment.locale(this.settings.momentLocale)
+      } catch (_) {}
+    }
+  }
 }
