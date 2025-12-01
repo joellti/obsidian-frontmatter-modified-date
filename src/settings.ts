@@ -23,7 +23,7 @@ export const DEFAULT_SETTINGS: FrontmatterModifiedSettings = {
   frontmatterProperty: 'modified',
   createdDateProperty: '',
   momentFormat: '',
-  momentLocale: 'en',
+  momentLocale: '',
   storeHistoryLog: false,
   historyNewestFirst: false,
   historyMaxItems: 0,
@@ -90,7 +90,7 @@ export class FrontmatterModifiedSettingTab extends PluginSettingTab {
         .setPlaceholder('en')
         .setValue(this.plugin.settings.momentLocale)
         .onChange(async value => {
-          this.plugin.settings.momentLocale = value || DEFAULT_SETTINGS.momentLocale
+          this.plugin.settings.momentLocale = value
           await this.plugin.saveSettings()
           this.plugin.setLocale()
         }))

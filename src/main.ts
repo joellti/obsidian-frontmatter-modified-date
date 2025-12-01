@@ -8,6 +8,7 @@ export default class FrontmatterModified extends Plugin {
 
   async onload () {
     await this.loadSettings()
+    this.setLocale()
 
     // The extension will run in the typing-events mode only
     this.registerEditorExtension(userChangeListenerExtension(this))
