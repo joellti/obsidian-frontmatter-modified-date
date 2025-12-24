@@ -93,10 +93,11 @@ export default class FrontmatterModified extends Plugin {
         // Are we appending to an array of entries?
         if (secondsSinceLastUpdate > 30) {
           type StringOrInteger = string | number
-          let newEntry: StringOrInteger | StringOrInteger[] = this.formatFrontmatterDate(now)
+          let newEntry: StringOrInteger = this.formatFrontmatterDate(now)
+          let newEntryList: StringOrInteger[] = []
 
           if (isAppendArray) {
-            let entries = cache?.frontmatter?.[this.settings.frontmatterProperty] || []
+            let entries = cache?.frontmatter?.[this.settings.frontmatterProperty + "_list"] || []
             if (!Array.isArray(entries)) entries = [entries] // In the case where the single previous entry was a string
             // We are using an array of entries. We need to check whether we want to replace the last array
             // entry (e.g. it is within the same timeframe unit), or we want to append a new entry
@@ -114,13 +115,18 @@ export default class FrontmatterModified extends Plugin {
             } else {
               entries.push(newEntry)
             }
-            newEntry = entries
+            newEntryList = entries
           }
 
           // Update the frontmatter
           this.app.fileManager.processFrontMatter(file, frontmatter => {
             // Update the modified date field
             frontmatter[this.settings.frontmatterProperty] = newEntry
+
+            // update the modified_list date field if not empty
+            if (Array.isArray(newEntryList) && newEntryList.length > 0) {
+              frontmatter[this.settings.frontmatterProperty + "_list"] = newEntryList
+            }
 
             // Create a created date field if requested
             if (!this.settings.onlyUpdateExisting && this.settings.createdDateProperty && !frontmatter[this.settings.createdDateProperty]) {
